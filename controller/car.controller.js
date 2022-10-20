@@ -2,14 +2,14 @@ import CarModel from '../models/Car.js';
 
 class CarController {
     async createCar(req, res) {
-        const {producer, price, image, brand, characteristics} = req.body;
+        const {producer, price, image, brand, characteristic} = req.body;
         try {
             const car = new CarModel({
                 producer,
                 brand,
                 price,
                 image,
-                characteristics
+                characteristic
               });
             await car.save();
             res.status(201).json(car);
@@ -20,7 +20,7 @@ class CarController {
 
     async getAllCars(req, res) {
         try {
-            const cars = await CarModel.find().populate('producer').populate('brand');
+            const cars = await CarModel.find().populate('producer', ['name', 'address']).populate('brand', ['name', 'logo']).populate('characteristic', ['year', 'mileage', 'color', 'engineType', 'engineVolume', 'transmission', 'clearance', 'bodyType']);
             res.status(200).json(cars);
         } catch (error) {
             res.status(500).json(error.message);

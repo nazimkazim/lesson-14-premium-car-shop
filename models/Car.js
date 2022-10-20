@@ -13,7 +13,7 @@ const CarSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Brand",
     },
-    characteristics: {
+    characteristic: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Characteristic",
     },

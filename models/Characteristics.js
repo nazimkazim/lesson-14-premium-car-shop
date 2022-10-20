@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const CharacteristicSchema = new mongoose.Schema({
     year: {
-        type: Date(),
+        type: Date,
         required: true,
     },
     mileage: {
