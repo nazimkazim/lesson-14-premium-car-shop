@@ -41,7 +41,8 @@ class CarCharacteristicController {
 
     async getCarCharacteristicById(req, res) {
         try {
-            const carCharacteristic = await CarCharacteristicModel.findById(req.params.id);
+            const carCharacteristic = await CarCharacteristicModel
+            .findById(req.params.id);
             res.status(200).json(carCharacteristic);
         } catch (error) {
             res.status(500).json(error.message);
@@ -50,7 +51,8 @@ class CarCharacteristicController {
 
     async updateCarCharacteristic(req, res) {
         try {
-            const carCharacteristic = await CarCharacteristicModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            const carCharacteristic = await CarCharacteristicModel
+            .findByIdAndUpdate(req.params.id, req.body, { new: true });
             res.status(200).json(carCharacteristic);
         } catch (error) {
             res.status(500).json(error.message);
@@ -59,7 +61,8 @@ class CarCharacteristicController {
 
     async deleteCarCharacteristic(req, res) {
         try {
-            const carCharacteristic = await CarCharacteristicModel.findByIdAndRemove(req.params.id);
+            const carCharacteristic = await CarCharacteristicModel
+            .findByIdAndRemove(req.params.id);
             res.status(200).json(carCharacteristic);
         } catch (error) {
             res.status(500).json(error.message);
