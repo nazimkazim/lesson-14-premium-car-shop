@@ -1,38 +1,17 @@
 import CarModel from "../models/Car.js";
+import cloudinary from "../cloudinary/index.js";
 
 class CarController {
   async createCar(req, res) {
-    const {
-      producer,
-      price,
-      image,
-      brand,
-      year,
-      mileage,
-      color,
-      engineType,
-      engineVolume,
-      transmission,
-      clearance,
-      bodyType,
-    } = req.body;
     try {
-      const car = new CarModel({
-        producer,
-        brand,
-        price,
-        image,
-        year,
-        mileage,
-        color,
-        engineType,
-        engineVolume,
-        transmission,
-        clearance,
-        bodyType,
-      });
+      const image = {
+        url: req.file.path,
+        filename: req.file.filename,
+      }
+      const data = {...req.body, image};
+      const car = new CarModel(data);
       await car.save();
-      res.status(201).json(car);
+      res.status(200).json(car);
     } catch (error) {
       res.status(500).json(error.message);
     }
@@ -97,7 +76,12 @@ class CarController {
 
   async updateCar(req, res) {
     try {
-      const car = await CarModel.findByIdAndUpdate(req.params.id, req.body);
+      const image = {
+        url: req.file.path,
+        filename: req.file.filename,
+      }
+      const data = {...req.body, image};
+      const car = await CarModel.findByIdAndUpdate(req.params.id, data);
       res.status(200).json(car);
     } catch (error) {
       res.status(500).json(error.message);
@@ -106,8 +90,12 @@ class CarController {
 
   async deleteCar(req, res) {
     try {
-      const car = await CarModel.findByIdAndDelete(req.params.id);
-      res.status(200).json(car);
+      const car = await CarModel.findById(req.params.id);
+      if (car?.image) {
+        await cloudinary.cloudinary.uploader.destroy(car?.image?.filename);
+      }
+      const deletedCar = await CarModel.findByIdAndDelete(req.params.id);
+      res.status(200).json(deletedCar);
     } catch (error) {
       res.status(500).json(error.message);
     }
