@@ -1,21 +1,21 @@
 import mongoose from "mongoose";
 
 const BrandSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        unique: true,
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  logo: {
+    url: String,
+    filename: String,
+  },
+  cars: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Car",
     },
-    logo: {
-        type: String,
-        required: true,
-    },
-    cars: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Car",
-        }
-    ]
+  ],
 });
 
 export default mongoose.model("Brand", BrandSchema);

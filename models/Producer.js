@@ -14,6 +14,10 @@ const ProducerSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    logo: {
+        url: String,
+        filename: String,
+    },
     cars: [
         {
             type: mongoose.Schema.Types.ObjectId,

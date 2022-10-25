@@ -1,13 +1,15 @@
 import BrandModel from '../models/Brand.js';
+import cloudinary from '../cloudinary/index.js';
 
 class BrandController {
     async createBrand(req, res) {
-        const {name, logo} = req.body;
         try {
-            const brand = new BrandModel({
-                name,
-                logo
-              });
+            const logo = {
+                url: req.file.path,
+                filename: req.file.filename,
+            }
+            const data = {...req.body, logo}
+            const brand = new BrandModel(data);
             await brand.save();
             res.status(201).json(brand);
         } catch (error) {
@@ -44,8 +46,12 @@ class BrandController {
 
     async deleteBrand(req, res) {
         try {
-            const brand = await BrandModel.findByIdAndDelete(req.params.id);
-            res.status(200).json(brand);
+            const brand = await BrandModel.findById(req.params.id);
+            if (brand.logo) {
+                await cloudinary.cloudinary.uploader.destroy(brand.logo.filename);
+            }
+            const deletedBrand = await BrandModel.findByIdAndDelete(req.params.id);
+            res.status(200).json(deletedBrand);
         } catch (error) {
             res.status(500).json(error.message);
         }

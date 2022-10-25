@@ -1,14 +1,15 @@
 import ProducerModel from "../models/Producer.js";
+import cloudinary from "../cloudinary/index.js";
 
 class ProducerController {
     async createProducer(req, res) {
-        const {name, address, country} = req.body;
         try {
-            const producer = new ProducerModel({
-                name,
-                address,
-                country
-              });
+            const logo = {
+                url: req.file.path,
+                filename: req.file.filename,
+            }
+            const data = {...req.body, logo}
+            const producer = new ProducerModel(data);
             await producer.save();
             res.status(201).json(producer);
         } catch (error) {
@@ -45,8 +46,12 @@ class ProducerController {
 
     async deleteProducer(req, res) {
         try {
-            const producer = await ProducerModel.findByIdAndDelete(req.params.id);
-            res.status(200).json(producer);
+            const producer = await ProducerModel.findById(req.params.id);
+            if (producer.logo) {
+                await cloudinary.cloudinary.uploader.destroy(producer.logo.filename);
+            }
+            const deletedProducer = await ProducerModel.findByIdAndDelete(req.params.id);
+            res.status(200).json(deletedProducer);
         } catch (error) {
             res.status(500).json(error.message);
         }
